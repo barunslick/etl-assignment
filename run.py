@@ -27,23 +27,20 @@ def truncate_all_tables(conn):
     truncate_table(conn, "dim_period", cascade=True, reset_identity=True)
 
 
-def perform_all_etl(conn):
-    extract_raw_employee_data(conn)
-
-
-conn = get_database_connection("etl-assignment")
-
 try:
+    conn = get_database_connection("etl-assignment")
+
     print('-----Starting ETL Process-----')
 
-    print('\n') 
+    print('\n')
     print('-----Truncating all tables----')
     truncate_all_tables(conn)
 
     print('\n')
     print('-----Extracting raw data into staging tables----')
     extract_raw_employee_data(conn, "./data/employee_2021_08_01.json")
-    extract_raw_timesheet_data(conn, "./data/timesheet_2021_05_23 - Sheet1.csv")
+    extract_raw_timesheet_data(
+        conn, "./data/timesheet_2021_05_23 - Sheet1.csv")
     extract_raw_timesheet_data(
         conn, "./data/timesheet_2021_06_23 - Sheet1.csv")
     extract_raw_timesheet_data(
@@ -67,7 +64,6 @@ try:
     print('-----Filling up fact tables----')
     extract_fact_employee(conn)
     extract_fact_timesheet(conn)
-
 
     print('\n')
     print('-----ETL Process End----')
